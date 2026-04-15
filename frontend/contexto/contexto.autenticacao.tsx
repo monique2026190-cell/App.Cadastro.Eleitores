@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { logger } from '../logs/app.log';
 import { loginComGoogle, buscarPerfil } from '../servicos/servico.autenticacao';
 import api from '../servicos/api';
+import { getUserFromResponse } from '../utils/apiResponse';
 
 // Tipagem forte para o usuário
 type User = {
@@ -47,10 +48,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
         try {
           const response = await buscarPerfil();
-          const loadedUser = response.data.user;
+          const loadedUser = getUserFromResponse(response);
           setToken(storedToken);
           setUser(loadedUser);
-          logger.info('auth.session.restore.success', { userId: loadedUser.id, email: loadedUser.email });
+          logger.info('auth.session.restore.success', { userId: loadedUser?.id, email: loadedUser?.email });
         } catch (error) {
           logger.warn('auth.session.restore.invalid_token', { error: 'Token inválido ou expirado' });
           // Limpa o estado e o localStorage se o token for inválido
@@ -76,14 +77,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
 
       const profileResponse = await buscarPerfil();
-      const loggedInUser = profileResponse.data.user;
+      const loggedInUser = getUserFromResponse(profileResponse);
 
       // Define o estado da aplicação
       setToken(newToken);
       setUser(loggedInUser);
 
       // Log enriquecido após o sucesso
-      logger.info('auth.login.success', { userId: loggedInUser.id, email: loggedInUser.email });
+      logger.info('auth.login.success', { userId: loggedInUser?.id, email: loggedInUser?.email });
 
     } catch (error: any) {
       logger.error('auth.login.error', { message: error.message, stack: error.stack });

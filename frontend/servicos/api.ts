@@ -1,19 +1,37 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { logger } from '../logs/app.log';
 import { env } from '../config/env';
+import { isValidResponse } from '../utils/apiResponse';
 
 // Cria a instância do Axios com a URL base da API
 const api = axios.create({
   baseURL: env.apiUrl,
 });
 
-// Adiciona o interceptor de resposta para logar erros automaticamente
+// Adiciona o interceptor de resposta para validar e logar automaticamente
 api.interceptors.response.use(
-  // Função para respostas de sucesso (não faz nada, apenas repassa a resposta)
-  (response) => response,
-  // Função para respostas de erro
+  // --- Interceptor de Sucesso ---
+  (response: AxiosResponse) => {
+    // Valida se a resposta, mesmo que bem-sucedida (status 2xx), tem um corpo de dados válido.
+    if (!isValidResponse(response)) {
+      // Se a resposta for inválida (ex: data: null), rejeita a promise.
+      // Isso força o erro a ser tratado no bloco .catch() da chamada da API.
+      logger.error('api.invalid.response', {
+        url: response.config?.url,
+        status: response.status,
+        data: response.data,
+      });
+      // Rejeita a promise com um erro padronizado
+      return Promise.reject(new Error('Resposta da API inválida ou vazia.'));
+    }
+
+    // Se a resposta for válida, apenas a repassa.
+    return response;
+  },
+
+  // --- Interceptor de Erro ---
   (error) => {
-    // Verifica se o erro é uma resposta de erro do Axios
+    // Verifica se o erro é uma resposta de erro do Axios (status 4xx, 5xx)
     if (error.response) {
       logger.error('api.error', {
         url: error.config?.url,
