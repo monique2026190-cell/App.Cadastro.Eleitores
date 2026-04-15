@@ -1,6 +1,6 @@
 
 import { Router } from 'express';
-import { logMessage } from '../controllers/controlador.log';
+import { logMessage } from '../controllers/controlador.log.js';
 
 const router = Router();
 
