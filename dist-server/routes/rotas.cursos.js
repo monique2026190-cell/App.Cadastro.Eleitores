@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getCursos } from '../controllers/controlador.cursos';
-import { authMiddleware } from '../middleware/middleware.autenticacao';
+import { getCursos } from '../controllers/controlador.cursos.js';
+import { authMiddleware } from '../middleware/middleware.autenticacao.js';
 const router = Router();
 /**
  * @swagger
