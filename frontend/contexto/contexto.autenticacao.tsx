@@ -1,6 +1,7 @@
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { env } from '../config/env'; // Importa a configuração de ambiente
+import log from '../logs/app.log'; // Importa a função de log
 
 // Define a interface para o estado de autenticação
 interface AuthState {
@@ -29,6 +30,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Função para realizar o login
   const login = async (credential: string) => {
+    await log('Tentativa de login');
     try {
       // Constrói a URL completa da API usando a variável de ambiente
       const apiUrl = `${env.apiUrl}/api/auth/google`;
@@ -48,6 +50,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const { token: newToken } = await response.json();
       setToken(newToken);
       localStorage.setItem('token', newToken);
+      await log('Login bem-sucedido');
 
       // Opcional: decodificar o token para obter dados do usuário e armazená-los no estado
       // const decodedUser = jwt_decode(newToken); // Usando uma biblioteca como jwt-decode
@@ -55,6 +58,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     } catch (error) {
       console.error("Erro no processo de login:", error);
+      await log(`Erro no processo de login: ${error}`);
       // Limpa o estado em caso de erro
       setToken(null);
       localStorage.removeItem('token');
@@ -64,7 +68,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   // Função para realizar o logout
-  const logout = () => {
+  const logout = async () => {
+    await log('Usuário deslogado');
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');

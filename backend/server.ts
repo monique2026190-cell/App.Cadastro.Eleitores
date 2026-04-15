@@ -2,7 +2,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import authRoutes from './routes/rotas.autenticacao.js'; // Importa as rotas de autenticação
+import routes from './routes/rotas.js'; // Importa as rotas de autenticação
 import { authMiddleware } from './middleware/middleware.autenticacao.js'; // Importa o middleware de autenticação
 
 const app = express();
@@ -17,8 +17,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // --- Rotas da API ---
-// Registra as rotas de autenticação sob o prefixo /api/auth
-app.use('/api/auth', authRoutes);
+// Registra as rotas de autenticação sob o prefixo /api
+app.use('/api', routes);
 
 // Exemplo de uma rota protegida
 // Esta rota só será acessível se um token JWT válido for fornecido.
