@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Typography, Box, CssBaseline, GlobalStyles, IconButton } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Footer from '../componentes/Footer';
-import CardInformacaoPerfil from '../componentes/card.informacoes.perfil.tsx';
+import CardInformacaoPerfil from '../componentes/card.informacoes.perfil';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate } from 'react-router-dom';
 import Cabecalho from '../componentes/Cabecalho';

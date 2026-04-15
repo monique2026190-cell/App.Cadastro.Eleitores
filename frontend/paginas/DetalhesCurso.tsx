@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, Typography, Container, Button, CardMedia, CssBaseline, GlobalStyles } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CardMetodosPagamento from '../componentes/card.metodos.pagamento.tsx';
+import CardMetodosPagamento from '../componentes/card.metodos.pagamento';
 import Cabecalho from '../componentes/Cabecalho';
 import DescricaoCursoCard from '../componentes/DescricaoCursoCard';
 import ComentariosCard from '../componentes/ComentariosCard';

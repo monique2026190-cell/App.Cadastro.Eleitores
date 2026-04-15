@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Typography, Box, CssBaseline, GlobalStyles, Tabs, Tab } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Footer from '../componentes/Footer';
-import MeusCursosCard from '../componentes/conteiner.meus.curso.tsx';
+import MeusCursosCard from '../componentes/conteiner.meus.curso';
 import Cabecalho from '../componentes/Cabecalho';
 
 const darkTheme = createTheme({

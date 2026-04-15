@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Container, Grid, Box, CssBaseline, GlobalStyles, IconButton } from '@mui/material';
 import BotaoCriarProposta from '../componentes/BotaoCriarProposta';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CursoCard from '../componentes/conteiner.lista.cursos.tsx';
+import CursoCard from '../componentes/conteiner.lista.cursos';
 import Footer from '../componentes/Footer';
 import SearchIcon from '@mui/icons-material/Search';
 import { useNavigate } from 'react-router-dom';
