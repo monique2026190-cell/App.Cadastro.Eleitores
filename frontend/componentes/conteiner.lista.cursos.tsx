@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Card, CardContent, Typography, Grid, Button, Box } from '@mui/material';
+import { Card, CardContent, Typography, Grid, Button, Box, CardMedia } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 interface CursoCardProps {
@@ -14,40 +15,42 @@ const CursoCard: React.FC<CursoCardProps> = ({ id, nome, descricao }) => {
   return (
     <Grid item xs={12} sm={6} md={4}>
       <Card
-        onClick={() => navigate(`/curso/${id}`)}
         sx={{
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          cursor: 'pointer',
-          borderRadius: 3,
+          borderRadius: 4,
           overflow: 'hidden',
-          transition: 'all 0.3s ease',
+          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
           bgcolor: 'background.paper',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
 
           '&:hover': {
-            transform: 'translateY(-6px)',
-            boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
+            transform: 'translateY(-8px)',
+            boxShadow: '0 16px 32px rgba(0,0,0,0.2)',
           }
         }}
       >
-        {/* Área visual/topo */}
-        <Box
-          sx={{
-            height: 140,
-            background: 'linear-gradient(135deg, #1e293b, #3b82f6)',
-          }}
+        <CardMedia
+          component="img"
+          height="160"
+          image={`https://source.unsplash.com/random/400x225?course,technology&sig=${id}`}
+          alt={nome}
+          onClick={() => navigate(`/curso/${id}`)}
+          sx={{ cursor: 'pointer' }}
         />
 
-        <CardContent sx={{ flexGrow: 1, p: 3 }}>
+        <CardContent sx={{ flexGrow: 1, p: 3, display: 'flex', flexDirection: 'column' }}>
           <Typography
-            variant="h6"
+            variant="h5"
+            component="div"
             sx={{
-              fontWeight: 600,
-              mb: 1,
+              fontWeight: 'bold',
+              mb: 1.5,
               color: 'text.primary',
+              cursor: 'pointer'
             }}
+             onClick={() => navigate(`/curso/${id}`)}
           >
             {nome}
           </Typography>
@@ -56,33 +59,30 @@ const CursoCard: React.FC<CursoCardProps> = ({ id, nome, descricao }) => {
             variant="body2"
             sx={{
               color: 'text.secondary',
-              lineHeight: 1.6,
+              mb: 3,
+              minHeight: 40,
+              flexGrow: 1
             }}
           >
-            {descricao}
+            {descricao.substring(0, 100) + (descricao.length > 100 ? '...' : '')}
           </Typography>
+
+           <Box sx={{ mt: 'auto' }}>
+            <Button
+              onClick={() => navigate(`/curso/${id}`)}
+              fullWidth
+              variant="contained"
+              sx={{
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 'bold',
+                py: 1.5,
+              }}
+            >
+              Ver Detalhes
+            </Button>
+          </Box>
         </CardContent>
-
-        <Box sx={{ p: 2, pt: 0 }}>
-          <Button
-            fullWidth
-            variant="contained"
-            sx={{
-              borderRadius: 2,
-              textTransform: 'none',
-              fontWeight: 500,
-              py: 1.2,
-              background: 'linear-gradient(135deg, #3b82f6, #6366f1)',
-              boxShadow: 'none',
-
-              '&:hover': {
-                boxShadow: '0 6px 20px rgba(59,130,246,0.3)',
-              }
-            }}
-          >
-            Adquirir Curso
-          </Button>
-        </Box>
       </Card>
     </Grid>
   );

@@ -2,13 +2,16 @@
 import React from 'react';
 import {
   CssBaseline, GlobalStyles, ThemeProvider, createTheme, Box, AppBar, Toolbar, IconButton, Typography,
-  Container, List, ListItem, ListItemIcon, ListItemText, Switch, Button, Divider
+  Container, Button
 } from '@mui/material';
 import {
-  ArrowBack as ArrowBackIcon, AccountCircle, Lock, Language, Notifications, CreditCard, Security, VpnKey,
+  ArrowBack as ArrowBackIcon,
   ExitToApp as ExitToAppIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { ContaSection } from './ContaSection';
+import { FinanceiroSection } from './FinanceiroSection';
+import { SegurancaSection } from './SegurancaSection';
 
 // O mesmo tema escuro e sofisticado da página de cursos
 const darkTheme = createTheme({
@@ -37,43 +40,6 @@ const darkTheme = createTheme({
   },
 });
 
-const SectionTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <Typography
-    variant="caption"
-    sx={{
-      fontWeight: 700,
-      textTransform: 'uppercase',
-      color: 'text.secondary',
-      letterSpacing: '1px',
-      display: 'block',
-      mb: 1,
-      mt: 3,
-      px: 2,
-    }}
-  >
-    {children}
-  </Typography>
-);
-
-const SettingsListItem: React.FC<{ icon: React.ReactElement; label: string; action?: React.ReactNode }> = ({ icon, label, action }) => (
-  <ListItem
-    secondaryAction={action}
-    sx={{
-      bgcolor: 'background.paper',
-      borderRadius: 2.5,
-      mb: 1,
-      p: '12px 16px',
-      transition: 'background-color 0.3s',
-      '&:hover': {
-        bgcolor: '#282828',
-      }
-    }}
-  >
-    <ListItemIcon sx={{ minWidth: 40, color: 'primary.main' }}>{icon}</ListItemIcon>
-    <ListItemText primary={label} primaryTypographyProps={{ fontWeight: 500 }} />
-  </ListItem>
-);
-
 export const ConfiguracoesApp: React.FC = () => {
   const navigate = useNavigate();
 
@@ -94,20 +60,9 @@ export const ConfiguracoesApp: React.FC = () => {
         </AppBar>
 
         <Container component="main" maxWidth="md" sx={{ flexGrow: 1, overflowY: 'auto', py: 3 }}>
-          <List>
-            <SectionTitle>Conta</SectionTitle>
-            <SettingsListItem icon={<AccountCircle />} label="Editar Perfil" />
-            <SettingsListItem icon={<Lock />} label="Conta Privada" action={<Switch color="primary" />} />
-            <SettingsListItem icon={<Language />} label="Idioma" />
-            <SettingsListItem icon={<Notifications />} label="Notificações" />
-
-            <SectionTitle>Financeiro</SectionTitle>
-            <SettingsListItem icon={<CreditCard />} label="Pagamentos" />
-
-            <SectionTitle>Segurança & Privacidade</SectionTitle>
-            <SettingsListItem icon={<VpnKey />} label="Alterar Senha" />
-            <SettingsListItem icon={<Security />} label="Privacidade" />
-          </List>
+          <ContaSection />
+          <FinanceiroSection />
+          <SegurancaSection />
 
           <Box sx={{ mt: 4, px: 1 }}>
             <Button

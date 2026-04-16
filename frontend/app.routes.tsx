@@ -4,7 +4,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './paginas/Login';
 import CompletarPerfil from './paginas/CompletarPerfil';
 import Cursos from './paginas/Cursos';
-import DetalhesCurso from './paginas/DetalhesCurso';
 import ConteudoCurso from './paginas/ConteudoCurso';
 import CriarProposta from './paginas/CriarProposta';
 import Notificacoes from './paginas/Notificacoes';
@@ -17,6 +16,9 @@ import RotaProtegida from './routes/RotaProtegida'; // Importe o componente de r
 import { useAuth } from './contexto/contexto.autenticacao';
 import Aula from './paginas/Aula';
 import CursoPreview from './paginas/CursoPreview';
+import { Provedores } from './paginas/Provedores';
+import { HistoricoFinanceiro } from './paginas/HistoricoFinanceiro';
+
 
 // Um componente para lidar com a rota raiz
 const PaginaInicial = () => {
@@ -42,7 +44,7 @@ const AppRoutes: React.FC = () => {
       <Route element={<RotaProtegida />}>
         <Route path="/completar-perfil" element={<CompletarPerfil />} />
         <Route path="/cursos" element={<Cursos />} />
-        <Route path="/curso/:id" element={<DetalhesCurso />} />
+        <Route path="/curso/:id" element={<CursoPreview />} />
         <Route path="/conteudo-curso/:id" element={<ConteudoCurso />} />
         <Route path="/criar-proposta" element={<CriarProposta />} />
         <Route path="/curso/:id/configuracoes" element={<ConfiguracoesCurso />} />
@@ -53,6 +55,8 @@ const AppRoutes: React.FC = () => {
         <Route path="/meu-perfil" element={<MeuPerfil />} />
         <Route path="/pesquisar-cursos" element={<PesquisaCursos />} />
         <Route path="/configuracoes-app" element={<ConfiguracoesApp />} />
+        <Route path="/provedores" element={<Provedores />} />
+        <Route path="/historico-financeiro" element={<HistoricoFinanceiro />} />
       </Route>
     </Routes>
   );

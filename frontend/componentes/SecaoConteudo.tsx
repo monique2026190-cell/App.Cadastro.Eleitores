@@ -5,96 +5,126 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Card,
+  CardContent,
+  Divider,
 } from '@mui/material';
-import FolderIcon from '@mui/icons-material/Folder';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  MoreVert as MoreVertIcon,
+  CreateNewFolder as CreateNewFolderIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  ArrowUpward as ArrowUpwardIcon,
+  ArrowDownward as ArrowDownwardIcon,
+} from '@mui/icons-material';
+import ListaPastas from './ListaPastas';
 
-type Pasta = {
+interface Pasta {
   id: number;
   titulo: string;
-};
+}
 
-type Secao = {
+interface Secao {
   id: number;
   titulo: string;
   pastas: Pasta[];
-};
-
-interface SecaoConteudoProps {
-  secoes: Secao[];
 }
 
-const SecaoConteudo: React.FC<SecaoConteudoProps> = ({ secoes }) => {
+interface SecaoConteudoProps {
+  cursoId: string;
+  secoes: Secao[];
+  handleCreateFolder: (sectionId: number) => void;
+  handleEditFolder: (sectionId: number, folderId: number, currentName: string) => void;
+  handleDeleteFolder: (sectionId: number, folderId: number) => void;
+  onMoveSection: (sectionId: number, direction: 'up' | 'down') => void;
+}
+
+const SecaoConteudo: React.FC<SecaoConteudoProps> = ({ 
+  cursoId,
+  secoes, 
+  handleCreateFolder, 
+  handleEditFolder,
+  handleDeleteFolder,
+  onMoveSection 
+}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedItem, setSelectedItem] = useState<{ type: 'secao' | 'pasta'; id: number } | null>(null);
-  const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const [selectedSectionId, setSelectedSectionId] = useState<number | null>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>, type: 'secao' | 'pasta', id: number) => {
-    event.stopPropagation(); // Impede que o clique na pasta propague para o ícone
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, sectionId: number) => {
     setAnchorEl(event.currentTarget);
-    setSelectedItem({ type, id });
+    setSelectedSectionId(sectionId);
   };
 
-  const handleClose = () => {
+  const handleMenuClose = () => {
     setAnchorEl(null);
-    setSelectedItem(null);
+    setSelectedSectionId(null);
   };
 
-  const handlePastaClick = (pastaId: number) => {
-    navigate(`/curso/${id}/aula/${pastaId}`);
-  };
+  const isFirstSection = (sectionId: number) => secoes.findIndex(s => s.id === sectionId) === 0;
+  const isLastSection = (sectionId: number) => secoes.findIndex(s => s.id === sectionId) === secoes.length - 1;
 
   return (
-    <>
-      {secoes.map(secao => (
-        <Box key={secao.id} sx={{ mb: 4 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h6" sx={{ color: 'text.primary' }}>{secao.titulo}</Typography>
-            <IconButton onClick={(e) => handleClick(e, 'secao', secao.id)} sx={{ color: 'white' }}>
-              <MoreVertIcon />
-            </IconButton>
-          </Box>
-          {secao.pastas.map(pasta => (
-            <Box 
-              key={pasta.id} 
-              onClick={() => handlePastaClick(pasta.id)}
-              sx={{
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between', 
-                bgcolor: '#2C2C2C', 
-                color: 'text.primary', 
-                mb: 1, 
-                p: '12px 16px', 
-                borderRadius: '4px',
-                cursor: 'pointer',
-                '&:hover': {
-                  bgcolor: '#3C3C3C',
-                }
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <FolderIcon sx={{ mr: 1, color: '#FFC107' }} />
-                <Typography>{pasta.titulo}</Typography>
+    <Box>
+      {secoes.map((secao, index) => (
+        <React.Fragment key={secao.id}>
+          <Card sx={{ bgcolor: '#1E1E1E', color: 'white', borderRadius: 2 }}>
+            <CardContent sx={{ pb: 1 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                <Typography variant="h6">{secao.titulo}</Typography>
+                <IconButton onClick={(event) => handleMenuClick(event, secao.id)}>
+                  <MoreVertIcon sx={{ color: 'white' }} />
+                </IconButton>
               </Box>
-              <IconButton onClick={(e) => handleClick(e, 'pasta', pasta.id)} sx={{ color: 'white' }}>
-                <MoreVertIcon />
-              </IconButton>
-            </Box>
-          ))}
-        </Box>
+            </CardContent>
+            <CardContent sx={{ pt: 0 }}>
+              <ListaPastas 
+                cursoId={cursoId}
+                sectionId={secao.id}
+                pastas={secao.pastas} 
+                onEdit={handleEditFolder}
+                onDelete={handleDeleteFolder}
+              />
+            </CardContent>
+          </Card>
+          {index < secoes.length - 1 && <Divider sx={{ my: 3, borderColor: 'rgba(255, 255, 255, 0.2)' }} />}
+        </React.Fragment>
       ))}
+
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
-        onClose={handleClose}
+        onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleClose}>Editar</MenuItem>
-        <MenuItem onClick={handleClose}>Excluir</MenuItem>
+        {selectedSectionId && !isFirstSection(selectedSectionId) && (
+            <MenuItem onClick={() => { onMoveSection(selectedSectionId, 'up'); handleMenuClose(); }}>
+                <ListItemIcon><ArrowUpwardIcon fontSize="small" /></ListItemIcon>
+                <ListItemText>Mover para Cima</ListItemText>
+            </MenuItem>
+        )}
+        {selectedSectionId && !isLastSection(selectedSectionId) && (
+            <MenuItem onClick={() => { onMoveSection(selectedSectionId, 'down'); handleMenuClose(); }}>
+                <ListItemIcon><ArrowDownwardIcon fontSize="small" /></ListItemIcon>
+                <ListItemText>Mover para Baixo</ListItemText>
+            </MenuItem>
+        )}
+        <MenuItem onClick={() => { handleCreateFolder(selectedSectionId!); handleMenuClose(); }}>
+            <ListItemIcon><CreateNewFolderIcon fontSize="small" /></ListItemIcon>
+            <ListItemText>Criar Pasta</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+            <ListItemIcon><EditIcon fontSize="small" /></ListItemIcon>
+            <ListItemText>Editar</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+            <ListItemIcon><DeleteIcon fontSize="small" /></ListItemIcon>
+            <ListItemText>Excluir</ListItemText>
+        </MenuItem>
       </Menu>
-    </>
+    </Box>
   );
 };
 

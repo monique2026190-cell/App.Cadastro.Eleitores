@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, LinearProgress, Box, Button, IconButton, Menu, MenuItem } from '@mui/material';
+import { Card, CardContent, Typography, Box, Button, IconButton, Menu, MenuItem, CardMedia } from '@mui/material';
 import { MoreVert } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 interface MeusCursosCardProps {
   id: number;
   nome: string;
-  progresso: number;
+  progresso: number; // Mantido para possível uso futuro, mas não exibido
   imagemUrl?: string;
 }
 
@@ -20,7 +20,7 @@ const MeusCursosCard: React.FC<MeusCursosCardProps> = ({ id, nome, progresso, im
   };
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    event.stopPropagation(); // Prevent card click event
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
@@ -41,74 +41,61 @@ const MeusCursosCard: React.FC<MeusCursosCardProps> = ({ id, nome, progresso, im
     <Card
       sx={{
         mb: 3,
-        cursor: 'pointer',
-        position: 'relative',
-        borderRadius: '12px',
-        overflow: 'hidden',
+        borderRadius: '16px',
         backgroundColor: '#1E1E1E',
-        boxShadow: '0 8px 24px 0 rgba(0,0,0,0.5)',
+        boxShadow: '0 4px 12px 0 rgba(0,0,0,0.3)',
         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
         '&:hover': {
-          transform: 'translateY(-5px)',
-          boxShadow: '0 12px 32px 0 rgba(0,0,0,0.6)',
+          transform: 'translateY(-4px)',
+          boxShadow: '0 8px 24px 0 rgba(0,0,0,0.4)',
         },
-        height: '200px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 50%), url(${imagemUrl || 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80'})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
       }}
-      onClick={handleCardClick}
     >
-        <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 3 }}>
+      <Box sx={{ position: 'relative' }}>
+        <CardMedia
+          component="img"
+          height="170"
+          image={imagemUrl || 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80'}
+          alt={nome}
+          onClick={handleCardClick}
+          sx={{ cursor: 'pointer' }}
+        />
+        <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
             <IconButton
-            aria-label="settings"
-            onClick={handleMenuClick}
-            sx={{ color: 'white' }}
+              aria-label="settings"
+              onClick={handleMenuClick}
+              sx={{ color: 'white', backgroundColor: 'rgba(0, 0, 0, 0.4)', '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.6)'} }}
             >
-            <MoreVert />
+              <MoreVert />
             </IconButton>
             <Menu
-            id="long-menu"
-            MenuListProps={{
-                'aria-labelledby': 'long-button',
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={() => handleMenuClose()}
-            PaperProps={{
-                style: {
-                maxHeight: 48 * 4.5,
-                width: '20ch',
-                },
-            }}
+              id="long-menu"
+              MenuListProps={{'aria-labelledby': 'long-button'}}
+              anchorEl={anchorEl}
+              open={open}
+              onClose={() => handleMenuClose()}
             >
-            <MenuItem onClick={handlePreviewClick}>
-                Preview
-            </MenuItem>
+              <MenuItem onClick={handlePreviewClick}>Preview</MenuItem>
             </Menu>
+        </Box>
       </Box>
 
-      <CardContent sx={{ position: 'relative', zIndex: 2, color: '#FFFFFF' }}>
-        <Typography variant="h5" component="div" sx={{ fontWeight: 'bold' }}>
+      <CardContent sx={{ color: '#FFFFFF' }}>
+        <Typography variant="h6" component="div" sx={{ fontWeight: '600', mb: 2, cursor: 'pointer' }} onClick={handleCardClick}>
           {nome}
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb: 2 }}>
-          <Box sx={{ width: '100%', mr: 1 }}>
-            <LinearProgress
-              variant="determinate"
-              value={progresso}
-              sx={{ height: 8, borderRadius: 5, backgroundColor: 'rgba(255,255,255,0.3)', '& .MuiLinearProgress-bar': { backgroundColor: '#BB86FC' } }}
-            />
-          </Box>
-          <Box sx={{ minWidth: 40 }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{`${Math.round(progresso)}%`}</Typography>
-          </Box>
-        </Box>
-        <Button variant="contained" color="primary" size="small" sx={{ backgroundColor: '#BB86FC', '&:hover': { backgroundColor: '#9e66d4' } }}>
-          Continuar
+        <Button 
+          variant="contained" 
+          fullWidth
+          onClick={handleCardClick}
+          sx={{ 
+            py: 1.5,
+            fontWeight: 'bold',
+            backgroundColor: '#5E97F6', 
+            '&:hover': { backgroundColor: '#4a78c4' } 
+          }}
+        >
+          Acessar Curso
         </Button>
       </CardContent>
     </Card>
