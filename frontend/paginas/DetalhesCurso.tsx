@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
-import { Card, CardContent, Typography, Container, Button, CardMedia, CssBaseline, GlobalStyles, CircularProgress, TextField, Box } from '@mui/material';
+import React from 'react';
+import { Card, CardContent, Typography, Container, Button, CardMedia, CssBaseline, GlobalStyles, CircularProgress, Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Cabecalho from '../componentes/Cabecalho';
 import DescricaoCursoCard from '../componentes/DescricaoCursoCard';
-import ComentariosCard from '../componentes/ComentariosCard';
 import { useDetalhesCurso } from '../hooks/useDetalhesCurso';
-import { useComentarios } from '../hooks/useComentarios';
-import { useCriarComentario } from '../hooks/useCriarComentario';
-import { useAuth } from '../contexto/contexto.autenticacao';
 
 const darkTheme = createTheme({
   palette: {
@@ -17,28 +13,18 @@ const darkTheme = createTheme({
       default: '#121212',
       paper: '#1E1E1E',
     },
+    primary: {
+        main: '#BB86FC',
+      },
   },
 });
 
 const DetalhesCurso: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const cursoId = id ? parseInt(id, 10) : undefined;
-
   const { curso, loading, error } = useDetalhesCurso(id);
-  const { data: comentarios, isLoading: loadingComentarios } = useComentarios(cursoId, !!cursoId);
-  const { mutate: criarComentario } = useCriarComentario(cursoId, !!cursoId);
-  const { user } = useAuth();
-  const [novoComentario, setNovoComentario] = useState('');
 
   const handleComprar = () => {
     // Lógica de compra
-  };
-
-  const handleCriarComentario = () => {
-    if (user && novoComentario.trim() !== '' && cursoId) {
-      criarComentario({ comentario: novoComentario, usuarioId: user.id });
-      setNovoComentario('');
-    }
   };
 
   if (loading) {
@@ -58,8 +44,8 @@ const DetalhesCurso: React.FC = () => {
       <CssBaseline />
       <GlobalStyles styles={{ body: { backgroundColor: "#121212" } }} />
       <Cabecalho />
-      <Container component="main" sx={{ mt: 10 }}>
-        <Card sx={{ bgcolor: 'background.paper' }}>
+      <Container component="main" sx={{ mt: 10, mb: 4 }}>
+        <Card sx={{ bgcolor: 'background.paper', mb: 4 }}>
           {curso.capa_curso && (
             <CardMedia
               component="img"
@@ -81,36 +67,6 @@ const DetalhesCurso: React.FC = () => {
           </CardContent>
         </Card>
         {curso.descricao && <DescricaoCursoCard descricao={curso.descricao} />}
-        
-        <div className="my-8">
-          <Typography variant="h5" component="h2" sx={{ mb: 4 }}>
-            Comentários
-          </Typography>
-          {user && (
-            <div className="mb-4">
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                variant="outlined"
-                label="Deixe seu comentário"
-                value={novoComentario}
-                onChange={(e) => setNovoComentario(e.target.value)}
-                sx={{ mb: 2 }}
-              />
-              <Button variant="contained" color="primary" onClick={handleCriarComentario}>
-                Enviar Comentário
-              </Button>
-            </div>
-          )}
-          {loadingComentarios ? (
-            <CircularProgress />
-          ) : (
-            comentarios?.map((comentario: any) => (
-              <ComentariosCard key={comentario.id} comentario={comentario} />
-            ))
-          )}
-        </div>
       </Container>
     </ThemeProvider>
   );

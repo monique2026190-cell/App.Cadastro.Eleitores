@@ -16,6 +16,7 @@ import { ConfiguracoesApp } from './paginas/ConfiguracoesApp';
 import RotaProtegida from './routes/RotaProtegida'; // Importe o componente de rota protegida
 import { useAuth } from './contexto/contexto.autenticacao';
 import Aula from './paginas/Aula';
+import CursoPreview from './paginas/CursoPreview';
 
 // Um componente para lidar com a rota raiz
 const PaginaInicial = () => {
@@ -46,6 +47,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/criar-proposta" element={<CriarProposta />} />
         <Route path="/curso/:id/configuracoes" element={<ConfiguracoesCurso />} />
         <Route path="/curso/:id/aula/:aulaId" element={<Aula />} />
+        <Route path="/curso/preview/:id" element={<CursoPreview />} />
         <Route path="/notificacoes" element={<Notificacoes />} />
         <Route path="/meus-cursos" element={<MeusCursos />} />
         <Route path="/meu-perfil" element={<MeuPerfil />} />
