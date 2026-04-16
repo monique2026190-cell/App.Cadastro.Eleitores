@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton, Box, Container, CssBaseline, GlobalStyles, Card } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -9,6 +9,7 @@ import CarrosselImagens from '../componentes/CarrosselImagens';
 import DescricaoCursoCard from '../componentes/DescricaoCursoCard';
 import BotaoComprar from '../componentes/BotaoComprar';
 import Logo from '../componentes/logo';
+import { buscarCursoPorId } from '../servicos/servico.cursos';
 
 const darkTheme = createTheme({
   palette: {
@@ -32,16 +33,26 @@ const CursoPreview: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
+  const [curso, setCurso] = useState<any>(null);
+
+  useEffect(() => {
+    if (id) {
+      buscarCursoPorId(id)
+        .then(response => {
+          setCurso(response.data);
+        })
+        .catch(error => {
+          console.error('Erro ao buscar curso:', error);
+        });
+    }
+  }, [id]);
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
 
-  const curso = {
-    nome: 'Curso de Exemplo',
-    descricao: 'Esta é uma descrição de exemplo para o curso. Aprenda tudo sobre este tópico incrível com nosso curso abrangente.',
-    imagemUrl: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80',
-    preco: 'R$ 99,90'
-  };
+  if (!curso) {
+    return <div>Carregando...</div>; // Ou um spinner de carregamento
+  }
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -75,12 +86,12 @@ const CursoPreview: React.FC = () => {
           
           {/* Seção do Carrossel */}
           <Card sx={{ mb: 3, borderRadius: '12px', overflow: 'hidden' }}>
-            <CarrosselImagens imagemUrl={curso.imagemUrl} nomeCurso={curso.nome} />
+            <CarrosselImagens imagemUrl={curso.capa_curso} nomeCurso={curso.nome} cursoId={id!} />
           </Card>
 
           {/* Seção da Descrição */}
           <Card sx={{ mb: 3, borderRadius: '12px' }}>
-            <DescricaoCursoCard nome={curso.nome} descricao={curso.descricao} preco={curso.preco} />
+            <DescricaoCursoCard nome={curso.nome} descricao={curso.descricao} preco={`R$ ${curso.preco}`} />
           </Card>
 
           {/* Seção do Botão de Compra */}

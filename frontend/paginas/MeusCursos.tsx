@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Typography, Box, CssBaseline, GlobalStyles, Tabs, Tab, Fab } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Footer from '../componentes/Footer';
 import MeusCursosCard from '../componentes/conteiner.meus.curso';
 import Cabecalho from '../componentes/Cabecalho';
@@ -60,8 +60,14 @@ const cursosCriados = [
 ];
 
 const MeusCursos: React.FC = () => {
-  const [selectedTab, setSelectedTab] = React.useState(0);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const getInitialTab = () => {
+    return location.state?.tab === 'criados' ? 2 : 0;
+  };
+
+  const [selectedTab, setSelectedTab] = React.useState(getInitialTab);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);

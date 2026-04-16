@@ -1,3 +1,4 @@
+
 import dotenv from 'dotenv';
 
 // Carrega as variáveis de ambiente do arquivo .env (se existir) para process.env
@@ -14,6 +15,8 @@ export const appConfig = {
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
   jwtSecret: process.env.JWT_SECRET,
   databaseUrl: process.env.DATABASE_URL,
+  stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+  stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
 };
 
 // --- Validação de Variáveis Críticas ---
@@ -24,17 +27,12 @@ if (!appConfig.googleClientId) {
   process.exit(1); // Encerra a aplicação se a variável não estiver presente
 }
 
-if (!appConfig.googleClientSecret) {
-  console.error("[App Config] ERRO: A variável de ambiente GOOGLE_CLIENT_SECRET não foi definida.");
-  process.exit(1); // Encerra a aplicação se a variável não estiver presente
+if (!appConfig.stripeSecretKey) {
+    console.error("[App Config] ERRO: A variável de ambiente STRIPE_SECRET_KEY não foi definida.");
+    process.exit(1);
 }
 
-if (!appConfig.jwtSecret) {
-  console.error("[App Config] ERRO: A variável de ambiente JWT_SECRET não foi definida.");
-  process.exit(1); // Encerra a aplicação se a variável não estiver presente
-}
-
-if (!appConfig.databaseUrl) {
-  console.error("[App Config] ERRO: A variável de ambiente DATABASE_URL não foi definida.");
-  process.exit(1); // Encerra a aplicação se a variável não estiver presente
+if (!appConfig.stripeWebhookSecret) {
+    console.error("[App Config] ERRO: A variável de ambiente STRIPE_WEBHOOK_SECRET não foi definida.");
+    process.exit(1);
 }

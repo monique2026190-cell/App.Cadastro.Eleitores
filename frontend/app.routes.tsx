@@ -19,6 +19,7 @@ import CursoPreview from './paginas/CursoPreview';
 import { Provedores } from './paginas/Provedores';
 import { HistoricoFinanceiro } from './paginas/HistoricoFinanceiro';
 import EditorNota from './paginas/EditorNota'; // Importa a nova página
+import VisualizadorMidia from './paginas/VisualizadorMidia';
 
 
 // Um componente para lidar com a rota raiz
@@ -54,6 +55,7 @@ const AppRoutes: React.FC = () => {
         {/* Nova rota para o editor de notas */}
         <Route path="/curso/:id/aula/:aulaId/nova-nota" element={<EditorNota />} />
         <Route path="/curso/preview/:id" element={<CursoPreview />} />
+        <Route path="/curso/:id/media" element={<VisualizadorMidia />} />
         <Route path="/notificacoes" element={<Notificacoes />} />
         <Route path="/meus-cursos" element={<MeusCursos />} />
         <Route path="/meu-perfil" element={<MeuPerfil />} />

@@ -35,3 +35,12 @@ export const criarCurso = (curso: { nome: string; descricao: string; capa_curso:
 export const apagarCurso = (id: number) => {
   return api.delete(`/api/cursos/${id}`);
 };
+
+/**
+ * Publica um curso.
+ * @param id O ID do curso a ser publicado.
+ * @returns A resposta da API.
+ */
+export const publicarCurso = (id: number) => {
+  return api.post(`/api/cursos/${id}/publicar`);
+};

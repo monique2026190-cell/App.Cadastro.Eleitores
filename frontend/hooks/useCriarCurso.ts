@@ -1,23 +1,15 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { criarCurso } from '../servicos/servico.cursos';
-import { AuthContext } from '../contexto/contexto.autenticacao';
-
-interface CursoData {
-  nome: string;
-  descricao: string;
-  capa_curso: string;
-  preco: number;
-}
+import { useAuth } from '../contexto/contexto.autenticacao'; 
 
 export const useCriarCurso = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const authContext = useContext(AuthContext);
-  const usuario = authContext?.user;
+  const { usuario } = useAuth(); // Obter o usuário do contexto de autenticação
 
-  const salvarCurso = async (cursoData: CursoData) => {
+  const salvarCurso = async (cursoData: { nome: string; descricao: string; capa_curso: string; preco: number; }) => {
     if (!usuario) {
       setError('Você precisa estar logado para criar um curso.');
       return;
@@ -27,7 +19,7 @@ export const useCriarCurso = () => {
     setError(null);
     try {
       await criarCurso({ ...cursoData, usuario_id: usuario.id });
-      navigate('/cursos'); // Sucesso, navegar para a lista de cursos
+      navigate('/meus-cursos', { state: { tab: 'criados' } }); // Sucesso, navegar para a lista de cursos criados
     } catch (err) {
       setError('Falha ao criar o curso. Tente novamente mais tarde.');
       console.error(err);

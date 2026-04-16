@@ -89,10 +89,22 @@ const CriarProposta: React.FC = () => {
             <SessaoMarketing />
 
             {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-
-            <Button type="submit" variant="contained" disabled={loading} sx={{ mt: 3, mb: 2 }}>
-              {loading ? <CircularProgress size={24} /> : 'Enviar Proposta'}
-            </Button>
+            
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3, mb: 2 }}>
+              <Button 
+                type="submit" 
+                variant="contained" 
+                disabled={loading} 
+                sx={{ 
+                  py: 1.5,
+                  px: 4,
+                  fontWeight: 'bold',
+                  borderRadius: '12px' 
+                }}
+              >
+                {loading ? <CircularProgress size={24} /> : 'Enviar Proposta'}
+              </Button>
+            </Box>
           </Box>
         </Container>
       </Box>
