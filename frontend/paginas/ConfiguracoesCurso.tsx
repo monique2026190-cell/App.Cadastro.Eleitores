@@ -1,100 +1,132 @@
 
 import React from 'react';
+import {
+  CssBaseline, GlobalStyles, ThemeProvider, createTheme, Box, AppBar, Toolbar, IconButton, Typography,
+  Container, List, ListItem, ListItemIcon, ListItemText, Switch, Button
+} from '@mui/material';
+import { ArrowBack as ArrowBackIcon, Edit, Photo, AddCircleOutline, Sort, Public, MonetizationOn, Delete } from '@mui/icons-material';
+
+// O mesmo tema escuro e sofisticado da página de cursos
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    background: {
+      default: '#121212',
+      paper: '#1E1E1E',
+    },
+    primary: {
+      main: '#5E97F6', // Um azul mais sóbrio e profissional
+    },
+    text: {
+      primary: '#EAEAEA',
+      secondary: '#A9A9A9',
+    },
+  },
+  typography: {
+    fontFamily: 'Inter, sans-serif',
+    h6: {
+      fontWeight: 600,
+    },
+    body1: {
+      fontWeight: 500,
+    },
+  },
+});
+
+const SectionTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <Typography
+    variant="caption"
+    sx={{
+      fontWeight: 700,
+      textTransform: 'uppercase',
+      color: 'text.secondary',
+      letterSpacing: '1px',
+      display: 'block',
+      mb: 1,
+      mt: 3,
+      px: 2,
+    }}
+  >
+    {children}
+  </Typography>
+);
+
+const SettingsListItem: React.FC<{ icon: React.ReactElement; label: string; action?: React.ReactNode }> = ({ icon, label, action }) => (
+  <ListItem
+    secondaryAction={action}
+    sx={{
+      bgcolor: 'background.paper',
+      borderRadius: 2.5,
+      mb: 1,
+      p: '12px 16px',
+      transition: 'background-color 0.3s',
+      '&:hover': {
+        bgcolor: '#282828',
+      }
+    }}
+  >
+    <ListItemIcon sx={{ minWidth: 40, color: 'primary.main' }}>{icon}</ListItemIcon>
+    <ListItemText primary={label} primaryTypographyProps={{ fontWeight: 500 }} />
+  </ListItem>
+);
 
 export const ConfiguracoesCurso: React.FC = () => {
-
-  const renderSwitch = () => (
-    <label className="switch" onClick={(e) => e.stopPropagation()}>
-      <input type="checkbox" />
-      <span className="slider"></span>
-    </label>
-  );
-
-  const Item = ({ icon, label, rightElement }: any) => (
-    <div className="setting-item">
-      <div className="setting-info">
-        <i className={`fas ${icon}`}></i>
-        <p>{label}</p>
-      </div>
-      {rightElement}
-    </div>
-  );
-
   return (
-    <div className="h-screen bg-[#121212] text-white font-['Inter'] flex flex-col overflow-hidden">
-      
-      <style>{`
-        header{display:flex;align-items:center;padding:16px;background:#1E1E1E;position:fixed;width:100%;top:0;z-index:10;border-bottom:1px solid rgba(255,255,255,0.12);height:65px;}
-        header .back-btn{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;padding-right:15px;}
-        main{padding-top:85px;padding-bottom:100px;width:100%;max-width:600px;margin:0 auto;padding-left:20px;padding-right:20px;overflow-y:auto;flex-grow:1;}
-        .settings-group{margin-bottom:20px;}
-        .settings-group h2{font-size:13px;color:#90caf9;padding:10px 0;margin-bottom:8px;text-transform:uppercase;font-weight:800;letter-spacing:1px;}
-        .setting-item{display:flex;align-items:center;justify-content:space-between;padding:16px;background-color:#1E1E1E;border:1px solid rgba(255,255,255,0.12);transition:0.2s;color:#fff;cursor:pointer;border-radius:14px;margin-bottom:8px;}
-        .setting-item:hover{background-color:#2c2c2c;border-color:rgba(144,202,249,0.5);}
-        .setting-info{display:flex;align-items:center;}
-        .setting-info i{font-size:18px;width:30px;text-align:center;margin-right:12px;color:#90caf9;}
-        .setting-item p{font-size:15px;font-weight:500;}
-        .switch{position:relative;display:inline-block;width:44px;height:24px;}
-        .switch input{opacity:0;width:0;height:0;}
-        .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#333;transition:.4s;border-radius:25px;}
-        .slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background-color:white;transition:.4s;border-radius:50%;}
-        input:checked + .slider{background-color:#90caf9;}
-        input:checked + .slider:before{transform:translateX(20px);}
-        .delete-container{margin-top:30px;padding:0 10px 40px 10px;}
-        .delete-btn{width:100%;padding:16px;background:rgba(255,77,77,0.08);border:1px solid rgba(255,77,77,0.2);color:#ff4d4d;border-radius:16px;font-weight:700;font-size:15px;cursor:pointer;transition:0.3s;display:flex;align-items:center;justify-content:center;gap:10px;}
-        .delete-btn:hover{background:#ff4d4d;color:#fff;box-shadow:0 4px 20px rgba(255,77,77,0.2);}
-      `}</style>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <GlobalStyles styles={{ body: { backgroundColor: darkTheme.palette.background.default } }} />
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+        <AppBar position="static" sx={{ bgcolor: 'background.paper', boxShadow: 'none', borderBottom: '1px solid rgba(255, 255, 255, 0.12)' }}>
+          <Toolbar>
+            <IconButton edge="start" color="inherit" aria-label="voltar">
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Configurações do Curso
+            </Typography>
+          </Toolbar>
+        </AppBar>
 
-      <header>
-        <button className="back-btn">
-          <i className="fas fa-arrow-left"></i>
-        </button>
-        <h1 className="font-bold text-lg">Configurações do Curso</h1>
-      </header>
+        <Container component="main" maxWidth="md" sx={{ flexGrow: 1, overflowY: 'auto', py: 3 }}>
+          <List>
+            <SectionTitle>Geral</SectionTitle>
+            <SettingsListItem icon={<Edit />} label="Editar Título e Descrição" />
+            <SettingsListItem icon={<Photo />} label="Alterar Imagem de Capa" />
 
-      <main>
+            <SectionTitle>Conteúdo</SectionTitle>
+            <SettingsListItem icon={<AddCircleOutline />} label="Adicionar Novo Módulo" />
+            <SettingsListItem icon={<Sort />} label="Reordenar Módulos" />
 
-        {/* GERAL */}
-        <div className="settings-group">
-          <h2>Geral</h2>
+            <SectionTitle>Acesso e Publicação</SectionTitle>
+            <SettingsListItem icon={<Public />} label="Curso Público" action={<Switch defaultChecked color="primary" />} />
+            <SettingsListItem icon={<MonetizationOn />} label="Monetização" action={<Switch color="primary" />} />
+          </List>
 
-          <Item icon="fa-edit" label="Editar Título e Descrição" />
-          <Item icon="fa-image" label="Alterar Imagem de Capa" />
-        </div>
-
-        {/* CONTEÚDO */}
-        <div className="settings-group">
-          <h2>Conteúdo</h2>
-
-          <Item icon="fa-plus-circle" label="Adicionar Novo Módulo" />
-          <Item icon="fa-sort" label="Reordenar Módulos" />
-        </div>
-
-        {/* ACESSO E PUBLICAÇÃO */}
-        <div className="settings-group">
-          <h2>Acesso e Publicação</h2>
-
-          <Item 
-            icon="fa-globe" 
-            label="Curso Público"
-            rightElement={renderSwitch()}
-          />
-           <Item 
-            icon="fa-dollar-sign" 
-            label="Monetização"
-            rightElement={renderSwitch()}
-          />
-        </div>
-
-        {/* ZONA DE PERIGO */}
-        <div className="delete-container">
-          <button className="delete-btn">
-            <i className="fas fa-trash-alt"></i>
-            Excluir Curso
-          </button>
-        </div>
-
-      </main>
-    </div>
+          <Box sx={{ mt: 4, px: 1 }}>
+            <SectionTitle>Zona de Perigo</SectionTitle>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="error"
+              startIcon={<Delete />}
+              sx={{
+                p: '12px',
+                borderRadius: 2.5,
+                textTransform: 'none',
+                fontWeight: 600,
+                borderColor: 'rgba(255, 82, 82, 0.5)',
+                color: 'rgba(255, 82, 82, 0.9)',
+                '&:hover': {
+                  borderColor: 'rgba(255, 82, 82, 0.8)',
+                  bgcolor: 'rgba(255, 82, 82, 0.1)',
+                },
+              }}
+            >
+              Excluir Curso Permanentemente
+            </Button>
+          </Box>
+        </Container>
+      </Box>
+    </ThemeProvider>
   );
 };
