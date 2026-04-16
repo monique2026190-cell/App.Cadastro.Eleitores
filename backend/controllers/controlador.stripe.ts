@@ -1,6 +1,6 @@
 
 import { Request, Response } from 'express';
-import { default as Stripe } from 'stripe';
+import Stripe = require('stripe');
 
 let stripe: Stripe | null = null;
 
