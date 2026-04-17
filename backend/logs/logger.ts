@@ -1,23 +1,75 @@
-
 import pino from 'pino';
 
-// Configuração do logger Pino para diferentes ambientes
-export const logger = pino({
-  // Define o nível de log com base no ambiente
-  // Em produção, logamos 'info' e acima. Em desenvolvimento, logamos tudo a partir de 'debug'.
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+// A configuração do logger é definida com base no ambiente (produção vs. desenvolvimento)
+let pinoOptions: pino.LoggerOptions;
 
-  // Configura o transporte de log (como os logs são formatados e exibidos)
-  transport: process.env.NODE_ENV !== 'production'
-    // Em desenvolvimento, usamos 'pino-pretty' para logs coloridos e legíveis
-    ? {
-        target: 'pino-pretty',
-        options: {
-          colorize: true,       // Habilita cores no output
-          translateTime: 'SYS:dd-mm-yyyy HH:MM:ss', // Formata o timestamp
-          ignore: 'pid,hostname', // Oculta o ID do processo e o nome do host
+if (process.env.NODE_ENV !== 'production') {
+  // --- CONFIGURAÇÃO DE DESENVOLVIMENTO (com pino-pretty) ---
+  pinoOptions = {
+    level: 'debug',
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        translateTime: 'SYS:yyyy-mm-dd HH:MM:ss',
+        ignore: 'pid,hostname,reqId,req,res,responseTime',
+        messageFormat: (log: pino.LogDescriptor, messageKey: string): string => {
+          const level = log.levelLabel || 'INFO';
+          const status = log.status || log.res?.statusCode;
+          const method = log.method || log.req?.method;
+          const url = log.url || log.req?.url;
+          const ip = log.ip || log.req?.remoteAddress;
+
+          let msg = `[${level.toUpperCase()}]`;
+          if (method) msg += ` ${method}`;
+          if (url) msg += ` ${url}`;
+          if (status) msg += ` | ${status}`;
+
+          // Adiciona a mensagem principal, tratando-a como detalhe se já houver contexto (método/url)
+          if (log[messageKey]) {
+            msg += method || url ? ` - ${log[messageKey]}` : ` ${log[messageKey]}`;
+          }
+
+          if (log.responseTime) {
+            msg += ` | ${log.responseTime}ms`;
+          }
+          if (ip) {
+            msg += ` | IP: ${ip}`;
+          }
+          return msg;
         },
-      }
-    // Em produção, não usamos transporte customizado para manter o formato JSON puro
-    : undefined,
-});
+        customLevels: {
+          http: 10,
+          debug: 20,
+          info: 30,
+          warn: 40,
+          error: 50,
+          fatal: 60,
+        },
+        useOnlyCustomLevels: false,
+        levelFirst: true,
+      },
+    },
+    formatters: {
+      level(label: string) {
+        return { levelLabel: label };
+      },
+    },
+  };
+} else {
+  // --- CONFIGURAÇÃO DE PRODUÇÃO (formato JSON) ---
+  pinoOptions = {
+    level: 'info',
+    formatters: {
+      // Em produção, queremos o formato de nível padrão do Pino para JSON
+      level(label: string) {
+        return { level: label };
+      },
+    },
+  };
+}
+
+// Cria a instância final do logger com as opções definidas
+const logger = pino(pinoOptions);
+
+export { logger };
