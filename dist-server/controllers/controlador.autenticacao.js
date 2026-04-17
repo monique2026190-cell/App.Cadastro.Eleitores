@@ -24,7 +24,16 @@ export const googleLoginHandler = async (req, res) => {
         // Cria um JWT para a sessão da aplicação
         const appJwt = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
         logger.info({ userId: user.id }, 'User authenticated successfully.');
-        res.status(200).json({ token: appJwt });
+        res.status(200).json({
+            token: appJwt,
+            perfilCompleto: user.perfil_completo,
+            user: {
+                id: user.id,
+                email: user.email,
+                nome: user.nome,
+                foto_perfil: user.foto_perfil,
+            }
+        });
     }
     catch (error) {
         logger.error({ error }, 'Error during Google login');
