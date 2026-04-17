@@ -1,0 +1,1 @@
+import{j as r}from"./index-U7bxcUUQ.js";import{c as o}from"./ButtonBase-BEJsXnF7.js";const e=o(r.jsx("path",{d:"M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2m0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2"}),"MoreVert");export{e as M};

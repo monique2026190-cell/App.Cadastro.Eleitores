@@ -1,0 +1,1 @@
+import{r as a}from"./index-U7bxcUUQ.js";function l(e,n){var i,t;return a.isValidElement(e)&&n.indexOf((i=e.type.muiName)!=null?i:(t=e.type)==null||(t=t._payload)==null||(t=t.value)==null?void 0:t.muiName)!==-1}function o(e){return typeof e=="string"}export{o as a,l as i};

@@ -1,48 +1,52 @@
 
-import React from 'react';
+import React, { lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Login from './paginas/Login';
-import CompletarPerfil from './paginas/CompletarPerfil';
-import Cursos from './paginas/Cursos';
-import ConteudoCurso from './paginas/ConteudoCurso';
-import CriarProposta from './paginas/CriarProposta';
-import Notificacoes from './paginas/Notificacoes';
-import MeusCursos from './paginas/MeusCursos';
-import MeuPerfil from './paginas/MeuPerfil';
-import PesquisaCursos from './paginas/PesquisaCursos';
-import { ConfiguracoesCurso } from './paginas/ConfiguracoesCurso';
-import { ConfiguracoesApp } from './paginas/ConfiguracoesApp';
-import RotaProtegida from './routes/RotaProtegida'; // Importe o componente de rota protegida
 import { useAuth } from './contexto/contexto.autenticacao';
-import Aula from './paginas/Aula';
-import CursoPreview from './paginas/CursoPreview';
-import { Provedores } from './paginas/Provedores';
-import { HistoricoFinanceiro } from './paginas/HistoricoFinanceiro';
-import EditorNota from './paginas/EditorNota'; // Importa a nova página
-import VisualizadorMidia from './paginas/VisualizadorMidia';
+import RotaProtegida from './routes/RotaProtegida';
 
+// Carregamento dinâmico (lazy loading) para todas as páginas
+const Login = lazy(() => import('./paginas/Login'));
+const CompletarPerfil = lazy(() => import('./paginas/CompletarPerfil'));
+const Cursos = lazy(() => import('./paginas/Cursos'));
+const ConteudoCurso = lazy(() => import('./paginas/ConteudoCurso'));
+const CriarProposta = lazy(() => import('./paginas/CriarProposta'));
+const Notificacoes = lazy(() => import('./paginas/Notificacoes'));
+const MeusCursos = lazy(() => import('./paginas/MeusCursos'));
+const MeuPerfil = lazy(() => import('./paginas/MeuPerfil'));
+const PesquisaCursos = lazy(() => import('./paginas/PesquisaCursos'));
+const ConfiguracoesCurso = lazy(() => import('./paginas/ConfiguracoesCurso').then(m => ({ default: m.ConfiguracoesCurso })));
+const ConfiguracoesApp = lazy(() => import('./paginas/ConfiguracoesApp').then(m => ({ default: m.ConfiguracoesApp })));
+const Aula = lazy(() => import('./paginas/Aula'));
+const CursoPreview = lazy(() => import('./paginas/CursoPreview'));
+const Provedores = lazy(() => import('./paginas/Provedores').then(m => ({ default: m.Provedores })));
+const HistoricoFinanceiro = lazy(() => import('./paginas/HistoricoFinanceiro').then(m => ({ default: m.HistoricoFinanceiro })));
+const EditorNota = lazy(() => import('./paginas/EditorNota'));
+const VisualizadorMidia = lazy(() => import('./paginas/VisualizadorMidia'));
 
-// Um componente para lidar com a rota raiz
+// Componente de redirecionamento que não deve ser lazy-loaded, pois é crítico para o boot inicial
 const PaginaInicial = () => {
-  const { token } = useAuth();
-  // Se o usuário estiver logado, redireciona para a página de cursos.
-  // Caso contrário, redireciona para a página de login.
-  return token ? <Navigate to="/cursos" replace /> : <Navigate to="/login" replace />;
-};
+  const { user, token } = useAuth();
 
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!user) {
+    // Idealmente, um loader aqui, mas a RotaProtegida já tem um loader global
+    return <Navigate to="/login" replace />;
+  }
+
+  return user.perfilCompleto
+    ? <Navigate to="/cursos" replace />
+    : <Navigate to="/completar-perfil" replace />;
+};
 
 const AppRoutes: React.FC = () => {
   return (
-    // O <Router> foi removido daqui e movido para app.nucleo.tsx
     <Routes>
-      {/* Rota pública para login */}
       <Route path="/login" element={<Login />} />
-
-      {/* A rota raiz agora decide para onde redirecionar */}
       <Route path="/" element={<PaginaInicial />} />
 
-      {/* Rotas Protegidas */}
-      {/* Todas as rotas aninhadas aqui exigirão autenticação */}
       <Route element={<RotaProtegida />}>
         <Route path="/completar-perfil" element={<CompletarPerfil />} />
         <Route path="/cursos" element={<Cursos />} />
@@ -50,9 +54,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/conteudo-curso/:id" element={<ConteudoCurso />} />
         <Route path="/criar-proposta" element={<CriarProposta />} />
         <Route path="/curso/:id/configuracoes" element={<ConfiguracoesCurso />} />
-        {/* A rota da aula usa :id para o curso, vamos manter a consistência */}
         <Route path="/curso/:id/aula/:aulaId" element={<Aula />} />
-        {/* Nova rota para o editor de notas */}
         <Route path="/curso/:id/aula/:aulaId/nova-nota" element={<EditorNota />} />
         <Route path="/curso/preview/:id" element={<CursoPreview />} />
         <Route path="/curso/:id/media" element={<VisualizadorMidia />} />
